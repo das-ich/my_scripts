@@ -1,0 +1,34 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+  - name: donwload bareos.repo
+    get_url: url=http://download.bareos.org/bareos/release/latest/RHEL_6/bareos.repo dest=/etc/yum.repos.d/bareos.repo mode=644
+  - name: install bareos client 
+    yum: name=bareos-client state=latest
+  - name: Creates directory for ssl key
+    file: path=/etc/bareos/ssl state=directory
+  - name: copy config bareos-fd.conf
+    template: src=/srv/bareos/bareos-fd.conf.j2
+      	      dest=/etc/bareos/bareos-fd.conf
+    become: yes
+  - name: copy cert
+    copy: src=/srv/bareos/ssl/bacula.office.ru.crt dest=/etc/bareos/ssl/bacula.office.ru.crt
+    become: yes
+  - name: copy key
+    copy: src=/srv/bareos/ssl/bacula.office.ru-nopass.key dest=/etc/bareos/ssl/bacula.office.ru-nopass.key
+    become: yes
+  - name: copy root cert
+    copy: src=/srv/bareos/ssl/ca.crt dest=/etc/bareos/ssl/ca.crt
+    become: yes
+  - lineinfile: dest=/etc/hosts line='192.168.0.25      bacula.office.ru'
+    become: yes
+  - iptables: chain=INPUT source=192.168.0.25/24 protocol=tcp match=tcp destination_port=9102 jump=ACCEPT
+    become: yes
+  - name: Iptables save rules
+    command: /etc/init.d/iptables save
+    become: yes
+  - name: enable bareos-fd
+    service: name=bareos-fd enabled=yes
+  - lineinfile: dest=/etc/sysconfig/network regexp=^HOSTNAME= line=HOSTNAME={{ inventory_hostname }}
+
