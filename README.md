@@ -15,6 +15,8 @@
 
 `squid-serv-utm.sh` - установка squid - pptp из собственного репозитария и исходных текстов
 
+`backup_mysql.sh` - бекап mysql средствами innobackupex, с отправкой письма в случаее сбоя
+
 ### ansible playbooks
 
 Назначение playbooks понятно из названия
