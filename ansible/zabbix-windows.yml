@@ -1,0 +1,26 @@
+---
+- hosts: all
+  tasks:
+  - name: copy zabbix agent install file
+    win_copy:
+      src: ../srv/zabbix_agent-4.4.5-windows-amd64-openssl.msi
+      dest: C:\windows\temp\zabbix_agent-4.4.5-windows-amd64-openssl.msi
+  - name: Install zabbix agent
+    win_package:
+      path: C:\windows\temp\zabbix_agent-4.4.5-windows-amd64-openssl.msi
+      arguments: 
+        - [HOSTNAMEFQDN=1]
+        - [SERVER=192.168.1.1
+        - [SERVERACTIVE=192.168.1.1
+        - [ENABLEREMOTECOMMANDS=1]
+      state: present
+  - name: copy config zabbix_agentd.conf
+    template: 
+      src: ../srv/zabbix_win/zabbix_agentd.conf.j2
+      dest: 'C:\Program Files\Zabbix Agent\zabbix_agentd.conf'
+  - name: Restart a service Zabbix Agent
+    win_service:
+      name: 'Zabbix Agent'
+      state: restarted
+  - include : add_to_zabbix_windows_host.yml
+ 

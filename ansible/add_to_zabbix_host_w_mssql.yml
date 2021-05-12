@@ -1,0 +1,25 @@
+---
+  - name: Create a new host or update an existing host's info
+    local_action:
+      module: zabbix_host
+      server_url: http://zabbix.lan
+      login_user: admin
+      login_password: adminpass
+      validate_certs: False
+      host_name: "{{ inventory_hostname }}"
+      visible_name: "{{ inventory_hostname }}"
+      host_groups:
+        - Virtual machines
+        - ms sql servers
+      link_templates:
+        - Template OS Windows by Zabbix agent
+        - Template App MS SQL 2014
+      status: enabled
+      state: present
+      interfaces:
+        - type: 1
+          main: 1
+          useip: 1
+          ip: "{{ ansible_host }}"
+          dns: "{{ inventory_hostname }}"
+          port: 10050

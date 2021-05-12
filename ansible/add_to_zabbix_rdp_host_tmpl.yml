@@ -1,0 +1,59 @@
+---
+- hosts: all
+  tasks:
+  - name: Copy zabbix scripts dir for rdp
+    win_copy:
+      src: ../srv/rdp/scripts
+      dest: 'C:\Program Files\Zabbix Agent'
+  - name: Copy zabbix userconf file for rdp
+    win_copy:
+      src: ../srv/rdp/rdp.terminal.server.conf
+      dest: 'C:\Program Files\Zabbix Agent\zabbix_agentd.conf.d\rdp.terminal.server.conf'
+  - name: copy PS module to rdp server
+    win_copy:
+      src: ../srv/rdp/PSTerminalServices.zip
+      dest: C:\windows\temp\PSTerminalServices.zip
+  - name: unzip PS module
+    win_unzip:
+      src: C:\windows\temp\PSTerminalServices.zip
+      dest: C:\Windows\System32\WindowsPowerShell\v1.0\Modules
+  - name: Restart a service Zabbix Agent
+    win_service:
+      name: 'Zabbix Agent'
+      state: restarted
+  - name: Create a new host or update an existing host's info
+    local_action:
+      module: zabbix_host
+      server_url: http://zabbix.lan
+      login_user: admin
+      login_password: adminpass
+      validate_certs: False
+      host_name: "{{ inventory_hostname }}"
+      visible_name: "{{ inventory_hostname }}"
+      host_groups:
+        - Virtual machines
+        - windows servers
+        - rdp servers
+      link_templates:
+        - Template OS Windows by Zabbix agent
+        - Template - Windows Terminal Server RDP
+      status: enabled
+      state: present
+      interfaces:
+        - type: 1
+          main: 1
+          useip: 1
+          ip: "{{ ansible_host }}"
+          dns: "{{ inventory_hostname }}"
+          port: 10050
+  - name: Create new host macro or update an existing macro's value
+    local_action:
+      module: zabbix_hostmacro
+      server_url: http://zabbix.lan
+      login_user: admin
+      login_password: adminpass
+      host_name: "{{ inventory_hostname }}"
+      macro_name: RDPA
+      macro_value: "75"
+      state: present
+
