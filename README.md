@@ -17,6 +17,8 @@
 
 `backup_mysql.sh` - бекап mysql средствами innobackupex, с отправкой письма в случаее сбоя
 
+`zabbix_getsla_cycle.py` - получение SLA на службы из zabbix 4.4 - servises(услуги) и добавление этих данных в базу MS SQL
+
 ### ansible playbooks
 
 Назначение playbooks понятно из названия
