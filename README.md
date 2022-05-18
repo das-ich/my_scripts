@@ -19,6 +19,11 @@
 
 `set_snap.sh` и `check_snap.sh` проверка и в случаее отсутсвия, включение snapshot isolation в MS SQL и отправка сообщения боту в Telegram
 
+### dialog
+
+В папки лежит cli-интерфейс добавления номеров и телефонов на сервере с asterisk
+
+
 ### python
 
 `zabbix_getsla_cycle.py` - получение SLA на службы из zabbix 4.4 - servises(услуги) и добавление этих данных в базу MS SQL
