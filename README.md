@@ -27,6 +27,8 @@
 ### python
 
 `zabbix_getsla_cycle.py` - получение SLA на службы из zabbix 4.4 - servises(услуги) и добавление этих данных в базу MS SQL
+`reset_term_session.py` - сброс терминальной сесси пользователя
+`restart_hasplm.py` - рестарт сервисов в windows
 
 ### ansible playbooks
 
